@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains files related to a study on traffic safety in New York City. The goal of this project is to analyze and understand patterns of traffic crashes, identify contributing factors to fatal crashes, and propose potential safety improvements. It also aims to analyze the grown safety issues realted to illegal gas-powered mopeds in the city.
+This repository contains files related to a study on traffic safety in New York City. The goal of this project is to analyze and understand patterns of traffic crashes, identify contributing factors to fatal crashes, and propose potential safety improvements. It also aims to analyze the grown safety issues realted to illegal gas-powered mopeds in the city. This is the basis for [several projects on my website](https://benjaminarnav.com).
 
 ## Table of Contents
 
