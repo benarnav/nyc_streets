@@ -1,10 +1,8 @@
-from selenium import webdriver
 import time
 import requests
-from selenium.webdriver.common.by import By
 import os
 
-cams_dict = { 'Queensboro_60thst' : 'https://webcams.nyctmc.org/api/cameras/d83aed40-b117-424b-8caf-35c3afe82527/image?t=1697576091936',
+cams_dict = {'Queensboro_60thst' : 'https://webcams.nyctmc.org/api/cameras/d83aed40-b117-424b-8caf-35c3afe82527/image?t=1697576091936',
              'BB25' : 'https://webcams.nyctmc.org/api/cameras/4f688c33-672c-4bac-bf2b-98438d464ccd/image?t=1697548827548',
              '7thave_23st': 'https://webcams.nyctmc.org/api/cameras/fcfbaa3d-13e5-4687-9688-ae1eab37c723/image?t=1697727190132',
              '8ave_49st' : 'https://webcams.nyctmc.org/api/cameras/4850e464-1111-4b5d-a72d-f54a0e12a789/image?t=1698153162583',
@@ -20,38 +18,26 @@ start_time = time.time()
 run_time = 60 * 180     #three hours
 end_time = start_time + run_time  
 
-driver = webdriver.Firefox()
-
-current_index = 0
-cameras_list = list(cams_dict.keys())
-num_urls = len(cameras_list)
 while time.time() < end_time:
-    for index in range(num_urls):
-        cam = cameras_list[current_index]
+    
+    for cam in cams_dict.keys():
         url = cams_dict[cam]    
         try:
-            driver.get(url)
-            time.sleep(1)
+            response = requests.get(url, stream=True)
+            response.raise_for_status()
             
-            image_element = driver.find_element(By.XPATH, "/html/body/img")
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            image_filename = f"{cam}/image_{timestamp}.jpg"
             
-            image_url = image_element.get_attribute("src")
-            
-            response = requests.get(image_url)
-            
-            if response.status_code == 200:
-                timestamp = time.strftime("%Y%m%d_%H%M%S")
-                image_filename = f"{cam}/image_{timestamp}.jpg"
-                if not os.path.exists(f"{cam}/"):
-                    os.makedirs(f"{cam}/")
-                with open(image_filename, "wb") as file:
-                    file.write(response.content)
-                print(f"Saved {image_filename}")
+            if not os.path.exists(f"{cam}/"):
+                os.makedirs(f"{cam}/")
+            with open(image_filename, "wb") as file:
+                file.write(response.content)
+                
+            print(f"Saved {image_filename}")
             
         except Exception as e:
             print(f"An error occurred: {e}")
+            continue
             
-        time.sleep(.5)
-        current_index = (current_index + 1) % num_urls 
-
-driver.quit()
+        time.sleep(1)
