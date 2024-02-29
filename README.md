@@ -50,4 +50,4 @@ If you would like to contribute to this project, please follow these steps:
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute the code and findings from this study.
+This project is licensed under the [GNU v3](LICENSE). Feel free to use, modify, and distribute the code and findings from this study.
