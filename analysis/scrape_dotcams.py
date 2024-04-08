@@ -1,6 +1,7 @@
 import time
 import requests
 import os
+from pathlib import Path
 
 cams_dict = {'Queensboro_60thst' : 'https://webcams.nyctmc.org/api/cameras/d83aed40-b117-424b-8caf-35c3afe82527/image?t=1697576091936',
              'BB25' : 'https://webcams.nyctmc.org/api/cameras/4f688c33-672c-4bac-bf2b-98438d464ccd/image?t=1697548827548',
@@ -16,7 +17,10 @@ cams_dict = {'Queensboro_60thst' : 'https://webcams.nyctmc.org/api/cameras/d83ae
 
 start_time = time.time()
 run_time = 60 * 180     #three hours
-end_time = start_time + run_time  
+end_time = start_time + run_time
+cwd = Path.cwd()
+today = time.strftime("%Y%m%d")
+img_path = cwd / f"{today}_images"
 
 while time.time() < end_time:
     
@@ -27,17 +31,16 @@ while time.time() < end_time:
             response.raise_for_status()
             
             timestamp = time.strftime("%Y%m%d_%H%M%S")
-            image_filename = f"{cam}/image_{timestamp}.jpg"
+            image_filepath = img_path / cam / f"{cam}_{timestamp}.jpg"
+            os.makedirs(img_path / cam , exist_ok=True)
             
-            if not os.path.exists(f"{cam}/"):
-                os.makedirs(f"{cam}/")
-            with open(image_filename, "wb") as file:
+            with open(image_filepath, "wb") as file:
                 file.write(response.content)
                 
-            print(f"Saved {image_filename}")
+            print(f"Saved {image_filepath}")
             
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"Error fetching image for {cam}: {e}")
             continue
             
-        time.sleep(1)
+        time.sleep(2)
